@@ -1,0 +1,38 @@
+.task-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.task-table th {
+  text-align: left;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.task-table td {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-base);
+}
+
+.task-table tr:last-child td {
+  border-bottom: none;
+}
+
+.task-table__action {
+  text-align: right;
+}
+
+.task-table__action .btn {
+  width: auto;
+  padding: var(--space-2) var(--space-5);
+}
+
+.task-table__empty {
+  padding: var(--space-5);
+  text-align: center;
+  color: var(--color-text-muted);
+}

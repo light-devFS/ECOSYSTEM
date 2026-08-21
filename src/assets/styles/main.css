@@ -1,0 +1,14 @@
+/*
+ * Point d'entrée unique des styles globaux.
+ * Chaque fichier a une responsabilité précise : ne pas ajouter de
+ * styles génériques directement ici, mais dans le fichier concerné.
+ */
+@import './variables.css';
+@import './base.css';
+@import './typography.css';
+@import './layout.css';
+@import './buttons.css';
+@import './forms.css';
+@import './navigation.css';
+@import './cards.css';
+@import './tables.css';

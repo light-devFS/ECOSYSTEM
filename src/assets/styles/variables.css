@@ -1,0 +1,64 @@
+/*
+ * Design tokens EduSphere.
+ * Toute couleur, espacement ou rayon utilisé ailleurs dans le projet
+ * doit provenir de ces variables. Ne jamais coder une valeur brute
+ * (hex, px) directement dans un composant : cela garantit que la
+ * charte reste cohérente et modifiable depuis un seul endroit.
+ */
+
+:root {
+  /* Couleurs principales — bleu/blanc/gris, conformes à la maquette */
+  --color-primary: #4f6fdb;
+  --color-primary-dark: #37426b;
+  --color-primary-light: #eef1fc;
+
+  --color-bg: #ffffff;
+  --color-bg-muted: #f7f8fa;
+  --color-border: #e1e4ea;
+
+  --color-text: #1f2430;
+  --color-text-muted: #6b7280;
+  --color-text-inverse: #ffffff;
+
+  --color-danger: #d64545;
+  --color-danger-bg: #fdecec;
+  --color-success: #2f9e5b;
+  --color-teal: #17a2a0;
+  --color-warning: #e0a53c;
+
+  /* Typographie */
+  --font-family-base: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.9375rem;
+  --font-size-md: 1.0625rem;
+  --font-size-lg: 1.375rem;
+  --font-size-xl: 1.75rem;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+
+  /* Espacements (échelle 4px) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Rayons et ombres */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-card: 0 1px 3px rgba(31, 36, 48, 0.08), 0 1px 2px rgba(31, 36, 48, 0.04);
+  --shadow-panel: 0 4px 24px rgba(31, 36, 48, 0.06);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+
+  /* Points de rupture (référence pour les media queries) */
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1080px;
+}
