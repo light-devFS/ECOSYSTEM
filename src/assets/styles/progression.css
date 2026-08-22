@@ -1,0 +1,48 @@
+.panel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.error-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.error-list__item {
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+}
+
+.revision-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.revision-list__periode {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.revision-list__detail {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.page-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.page-heading .btn {
+  width: auto;
+  padding-left: var(--space-5);
+  padding-right: var(--space-5);
+  flex-shrink: 0;
+}

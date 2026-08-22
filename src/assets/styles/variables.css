@@ -25,6 +25,8 @@
   --color-success: #2f9e5b;
   --color-teal: #17a2a0;
   --color-warning: #e0a53c;
+  --color-teal: #17a2a0;
+  --color-warning: #e0a53c;
 
   /* Typographie */
   --font-family-base: 'Segoe UI', system-ui, -apple-system, sans-serif;

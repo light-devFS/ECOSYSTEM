@@ -83,19 +83,12 @@ import BaseButton from '@/components/base/BaseButton.vue'
 import { getStudentDashboard } from '@/services/dashboard/dashboardService'
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
+import { eleveNavItems } from '@/config/nav/eleveNavItems'
 
 const router = useRouter()
 const session = useSession()
 
-const navItems = [
-  { label: 'Tableau de bord', to: '/eleve/dashboard' },
-  { label: 'Mes cours', to: '/eleve/cours', disabled: true },
-  { label: 'Exercices', to: '/eleve/exercices', disabled: true },
-  { label: 'Tuteur IA', to: '/eleve/tuteur-ia', disabled: true },
-  { label: 'Progression', to: '/eleve/progression', disabled: true },
-  { label: 'Groupes', to: '/eleve/groupes', disabled: true },
-  { label: 'Mes tickets', to: '/eleve/tickets', disabled: true },
-]
+const navItems = eleveNavItems
 
 const userName = computed(() => session.user?.name || 'Élève')
 const firstName = computed(() => userName.value.split(' ')[0])

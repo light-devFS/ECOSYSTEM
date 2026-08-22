@@ -1,0 +1,66 @@
+.task-table__row--clickable {
+  cursor: pointer;
+}
+
+.task-table__row--selected {
+  background-color: var(--color-primary-light);
+}
+
+.vertical-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vertical-timeline__step {
+  position: relative;
+  display: flex;
+  gap: var(--space-3);
+  padding-bottom: var(--space-5);
+  padding-left: var(--space-2);
+}
+
+.vertical-timeline__step:last-child {
+  padding-bottom: 0;
+}
+
+.vertical-timeline__step::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 18px;
+  bottom: -4px;
+  width: 2px;
+  background-color: var(--color-border);
+}
+
+.vertical-timeline__step:last-child::before {
+  display: none;
+}
+
+.vertical-timeline__dot {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  margin-top: 2px;
+}
+
+.vertical-timeline__step--fait .vertical-timeline__dot {
+  background-color: var(--color-success);
+}
+
+.vertical-timeline__step--en-cours .vertical-timeline__dot {
+  background-color: var(--color-primary);
+}
+
+.vertical-timeline__label {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-1);
+}
+
+.vertical-timeline__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}

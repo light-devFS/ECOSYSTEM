@@ -1,0 +1,38 @@
+export const mockExercises = [
+  {
+    id: 'ex1',
+    titre: 'Suites arithmétiques',
+    matiere: 'Mathématiques',
+    competence: 'Suites numériques',
+    difficulte: 'moyen',
+    statut: 'en-cours',
+    score: null,
+  },
+  {
+    id: 'ex2',
+    titre: 'Circuits en série et dérivation',
+    matiere: 'Physique-Chimie',
+    competence: 'Électricité',
+    difficulte: 'moyen',
+    statut: 'termine',
+    score: 78,
+  },
+  {
+    id: 'ex3',
+    titre: 'Compréhension orale',
+    matiere: 'Anglais',
+    competence: 'Écoute active',
+    difficulte: 'difficile',
+    statut: 'a-faire',
+    score: null,
+  },
+  {
+    id: 'ex4',
+    titre: 'Vocabulaire de la cellule',
+    matiere: 'SVT',
+    competence: 'Biologie cellulaire',
+    difficulte: 'facile',
+    statut: 'termine',
+    score: 98,
+  },
+]

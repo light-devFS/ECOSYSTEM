@@ -44,4 +44,5 @@ export async function login(credentials) {
 export async function logout() {
   await delay(200)
   clearCurrentUser()
+  clearCurrentUser()
 }
