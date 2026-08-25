@@ -1,48 +1,63 @@
-/**
- * authService
- *
- * Toute la logique d'authentification passe par ce fichier.
- * Aucun composant Vue ne doit appeler Firebase directement : le jour
- * où le backend sera branché, seule l'implémentation ci-dessous change
- * (login/logout/getCurrentUser), l'interface reste identique.
- *
- * Implémentation actuelle : simulation avec les utilisateurs mockés,
- * en attendant Firebase Authentication.
- */
-import { mockUsers } from '@/mock/users'
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { auth } from '@/services/firebase'
 import { setCurrentUser, clearCurrentUser } from '@/services/auth/session'
 
-const SIMULATED_DELAY_MS = 600
-
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 /**
- * Tente une connexion.
- * @param {{ identifier: string, email: string, password: string }} credentials
- * @returns {Promise<{ id: string, name: string, role: string }>}
- * @throws {Error} avec un message destiné à être affiché à l'utilisateur
+ * Connexion avec Firebase Auth
  */
 export async function login(credentials) {
-  await delay(SIMULATED_DELAY_MS)
+  const { email, password } = credentials
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    const { uid, displayName, email: userEmail } = userCredential.user
 
-  const user = mockUsers.find(
-    (candidate) =>
-      candidate.identifier === credentials.identifier && candidate.email === credentials.email
-  )
-
-  if (!user || user.password !== credentials.password) {
-    throw new Error('Identifiant, e-mail ou mot de passe incorrect.')
+    const user = {
+      id: uid,
+      name: displayName || 'Utilisateur',
+      email: userEmail,
+      role: 'eleve', // sera amélioré plus tard avec un doc Firestore
+    }
+    setCurrentUser(user)
+    return user
+  } catch (error) {
+    let message = 'Une erreur est survenue lors de la connexion.'
+    switch (error.code) {
+      case 'auth/user-not-found':
+        message = 'Aucun utilisateur trouvé avec cet email.'
+        break
+      case 'auth/wrong-password':
+        message = 'Mot de passe incorrect.'
+        break
+      case 'auth/invalid-email':
+        message = 'Adresse email invalide.'
+        break
+      case 'auth/too-many-requests':
+        message = 'Trop de tentatives. Réessaie plus tard.'
+        break
+      default:
+        message = error.message
+    }
+    throw new Error(message)
   }
-
-  const { password, ...safeUser } = user
-  setCurrentUser(safeUser)
-  return safeUser
 }
 
 export async function logout() {
-  await delay(200)
+  await signOut(auth)
   clearCurrentUser()
-  clearCurrentUser()
+}
+
+export function initAuthListener() {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const userData = {
+        id: user.uid,
+        name: user.displayName || 'Utilisateur',
+        email: user.email,
+        role: 'eleve',
+      }
+      setCurrentUser(userData)
+    } else {
+      clearCurrentUser()
+    }
+  })
 }

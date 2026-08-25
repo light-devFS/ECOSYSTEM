@@ -1,11 +1,14 @@
-import { mockCourses } from '@/mock/courses'
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '@/services/firebase'
 
 /**
- * courseService
- * À remplacer par une lecture Firestore (collection "courses" filtrée
- * par élève/classe) quand le backend sera disponible.
+ * Récupère tous les cours (accessible à tout utilisateur authentifié)
  */
 export async function getStudentCourses() {
-  await new Promise((resolve) => setTimeout(resolve, 400))
-  return mockCourses
+  const querySnapshot = await getDocs(collection(db, 'courses'))
+  const courses = []
+  querySnapshot.forEach((doc) => {
+    courses.push({ id: doc.id, ...doc.data() })
+  })
+  return courses
 }
