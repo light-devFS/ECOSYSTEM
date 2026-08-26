@@ -7,5 +7,12 @@ export default defineConfig({
     alias: {
       '@': '/src'
     }
+  },
+  server: {
+    // Nécessaire pour accéder au serveur de dev via un tunnel (localtunnel, ngrok)
+    // ou depuis un autre appareil du réseau sous un autre nom d'hôte.
+    // Sans ça, Vite renvoie une erreur 400 pour toute requête dont le nom
+    // d'hôte n'est pas localhost.
+    allowedHosts: true
   }
 })

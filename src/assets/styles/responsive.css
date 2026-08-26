@@ -1,0 +1,58 @@
+/*
+ * Toutes les règles dépendant de la taille d'écran vivent ici, plutôt
+ * que dispersées dans chaque fichier de composant — un seul endroit
+ * à consulter pour comprendre le comportement responsive du projet.
+ */
+
+/* Tablette et mobile : la sidebar devient un panneau qui glisse par-dessus le contenu */
+@media (max-width: 767px) {
+  .app-header__hamburger {
+    display: flex;
+  }
+
+  .app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 240px;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: var(--shadow-panel);
+  }
+
+  .app-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .app-header {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .app-shell__content {
+    padding: var(--space-4);
+  }
+
+  .auth-layout__content {
+    padding: var(--space-4);
+  }
+}
+
+/* Petit mobile : l'historique du tuteur IA passe au-dessus du chat plutôt qu'à côté */
+@media (max-width: 640px) {
+  .tutor-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Très petit écran : une seule carte statistique par ligne */
+@media (max-width: 420px) {
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}

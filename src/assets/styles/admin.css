@@ -1,0 +1,21 @@
+.metric-row .alert-row__title {
+  margin-bottom: var(--space-1);
+}
+
+.metric-value {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 20rem;
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg);
+}

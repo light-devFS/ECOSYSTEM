@@ -47,6 +47,12 @@
   font-weight: var(--font-weight-bold);
 }
 
+.stat-card__caption {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+}
+
 .panel-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -59,10 +65,15 @@
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   padding: var(--space-5);
+  overflow-x: auto;
 }
 
 .panel__title {
   margin-bottom: var(--space-4);
+}
+
+.panel__title--centered {
+  text-align: center;
 }
 
 .progress-row {

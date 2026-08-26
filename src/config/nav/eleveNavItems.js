@@ -6,6 +6,7 @@
  */
 export const eleveNavItems = [
   { label: 'Tableau de bord', to: '/eleve/dashboard' },
+  { label: "Banque d'épreuves", to: '/eleve/banque-epreuves' },
   { label: 'Mes cours', to: '/eleve/cours' },
   { label: 'Exercices', to: '/eleve/exercices' },
   { label: 'Tuteur IA', to: '/eleve/tuteur-ia' },

@@ -1,5 +1,7 @@
 <template>
-  <aside class="app-sidebar">
+  <div v-if="isOpen" class="app-sidebar__backdrop" @click="closeSidebar" />
+
+  <aside class="app-sidebar" :class="{ 'app-sidebar--open': isOpen }">
     <p class="app-sidebar__brand">EduSphere</p>
 
     <nav class="app-sidebar__nav">
@@ -10,9 +12,10 @@
         class="app-sidebar__link"
         :class="{ 'app-sidebar__link--disabled': item.disabled }"
         :aria-disabled="item.disabled"
-        @click="item.disabled && $event.preventDefault()"
+        @click="handleLinkClick(item, $event)"
       >
-        {{ item.label }}
+        <span>{{ item.label }}</span>
+        <span v-if="item.badge" class="app-sidebar__link-badge">{{ item.badge }}</span>
       </router-link>
     </nav>
 
@@ -30,12 +33,17 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useLayoutState, closeSidebar } from '@/services/ui/layoutState'
 
 /**
  * AppSidebar
- * navItems: [{ label, to, disabled }] — "disabled" sert pour les
+ * navItems: [{ label, to, disabled, badge }] — "disabled" sert pour les
  * espaces pas encore développés, afin de ne jamais pointer vers une
  * route inexistante.
+ *
+ * Sur mobile, la sidebar devient un panneau qui glisse par-dessus le
+ * contenu (voir responsive.css) ; l'état d'ouverture vient de
+ * layoutState, partagé avec AppHeader (bouton menu).
  */
 const props = defineProps({
   navItems: {
@@ -49,6 +57,18 @@ const props = defineProps({
 })
 
 defineEmits(['logout'])
+
+const layout = useLayoutState()
+const isOpen = computed(() => layout.sidebarOpen)
+
+function handleLinkClick(item, event) {
+  if (item.disabled) {
+    event.preventDefault()
+    return
+  }
+  // Sur mobile, on referme le panneau après avoir choisi une page.
+  closeSidebar()
+}
 
 const initials = computed(() =>
   props.userName

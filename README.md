@@ -9,11 +9,48 @@ npm run dev
 
 Ouvre ensuite l'URL affichée (généralement `http://localhost:5173/connexion`).
 
-## Compte de test (données mockées)
+## Comptes de test (données mockées)
 
+**Élève**
 - Identifiant : `eleve.demo`
 - E-mail : `eleve@edusphere.test`
 - Mot de passe : `demo1234`
+
+**Parent**
+- Identifiant : `parent.demo`
+- E-mail : `parent@edusphere.test`
+- Mot de passe : `demo1234`
+
+**Administration**
+- Identifiant : `admin.demo`
+- E-mail : `admin@edusphere.test`
+- Mot de passe : `demo1234`
+
+Chaque compte redirige automatiquement vers le tableau de bord de son espace après connexion.
+
+## Pages disponibles
+
+**Espace élève** (`/eleve/...`)
+- `dashboard` — Tableau de bord
+- `banque-epreuves` — Banque d'épreuves
+- `cours` — Mes cours
+- `exercices` — Exercices
+- `tuteur-ia` — Tuteur IA
+- `progression` — Progression & révisions
+- `groupes` — Groupes
+- `tickets` — Mes tickets
+
+**Espace parent** (`/parent/...`)
+- `dashboard` — Tableau de bord (suivi de l'enfant)
+- `evolution` — Evolution par matière
+- `devoirs` — Devoirs & échéances
+- `messagerie` — Messagerie
+
+**Espace administration** (`/admin/...`)
+- `dashboard` — Tableau de bord
+- `eleves-enseignants` — Eleves & Enseignants
+
+Cette liste est mise à jour à chaque nouvelle page ajoutée — vérifie-la ici avant de demander "comment j'accède à telle page".
 
 ## Organisation du projet
 

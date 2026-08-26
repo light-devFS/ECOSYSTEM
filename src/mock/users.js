@@ -8,7 +8,7 @@ export const mockUsers = [
     identifier: 'eleve.demo',
     email: 'eleve@edusphere.test',
     password: 'demo1234',
-    name: 'Awa Kponou',
+    name: 'Awa Mensah',
     role: 'eleve',
   },
   {
@@ -16,7 +16,15 @@ export const mockUsers = [
     identifier: 'parent.demo',
     email: 'parent@edusphere.test',
     password: 'demo1234',
-    name: 'Kossi Adjovi',
+    name: 'Boris Mensah',
     role: 'parent',
+  },
+  {
+    id: 'u3',
+    identifier: 'admin.demo',
+    email: 'admin@edusphere.test',
+    password: 'demo1234',
+    name: 'Sarah ADJOWA',
+    role: 'admin',
   },
 ]

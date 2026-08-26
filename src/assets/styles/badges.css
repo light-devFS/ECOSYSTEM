@@ -26,3 +26,8 @@
   background-color: var(--color-bg-muted);
   color: var(--color-text-muted);
 }
+
+.badge--info {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}

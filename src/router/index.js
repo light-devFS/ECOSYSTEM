@@ -58,8 +58,48 @@ const routes = [
     meta: { role: 'eleve' },
     component: () => import('@/views/eleve/TicketsView.vue'),
   },
-  // Prochaines routes, à titre indicatif — ajoutées au fil des maquettes :
-  // { path: '/parent/dashboard', name: 'parent-dashboard', meta: { role: 'parent' }, component: ... },
+  {
+    path: '/eleve/banque-epreuves',
+    name: 'eleve-banque-epreuves',
+    meta: { role: 'eleve' },
+    component: () => import('@/views/eleve/ExamBankView.vue'),
+  },
+  {
+    path: '/parent/dashboard',
+    name: 'parent-dashboard',
+    meta: { role: 'parent' },
+    component: () => import('@/views/parent/ParentDashboardView.vue'),
+  },
+  {
+    path: '/parent/evolution',
+    name: 'parent-evolution',
+    meta: { role: 'parent' },
+    component: () => import('@/views/parent/EvolutionView.vue'),
+  },
+  {
+    path: '/parent/devoirs',
+    name: 'parent-devoirs',
+    meta: { role: 'parent' },
+    component: () => import('@/views/parent/AssignmentsView.vue'),
+  },
+  {
+    path: '/parent/messagerie',
+    name: 'parent-messagerie',
+    meta: { role: 'parent' },
+    component: () => import('@/views/parent/MessagingView.vue'),
+  },
+  {
+    path: '/admin/dashboard',
+    name: 'admin-dashboard',
+    meta: { role: 'admin' },
+    component: () => import('@/views/admin/AdminDashboardView.vue'),
+  },
+  {
+    path: '/admin/eleves-enseignants',
+    name: 'admin-eleves-enseignants',
+    meta: { role: 'admin' },
+    component: () => import('@/views/admin/PeopleView.vue'),
+  },
 ]
 
 const router = createRouter({

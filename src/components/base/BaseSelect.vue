@@ -1,5 +1,5 @@
 <template>
-  <div class="field field--inline">
+  <div class="field" :class="stacked ? '' : 'field--inline'">
     <label v-if="label" class="field__label">{{ label }}</label>
     <select
       class="select"
@@ -17,8 +17,8 @@
 /**
  * BaseSelect
  * options: [{ value, label }]
- * Utilisé pour les filtres (ex : "Toutes les matières") sur les pages
- * de listes — à réutiliser plutôt que de recréer un select à chaque fois.
+ * stacked: true place le label au-dessus du menu (ex : barre de filtres) ;
+ * par défaut le label est en ligne, à côté (ex : filtre isolé en haut de page).
  */
 defineProps({
   modelValue: {
@@ -32,6 +32,10 @@ defineProps({
   label: {
     type: String,
     default: '',
+  },
+  stacked: {
+    type: Boolean,
+    default: false,
   },
 })
 
