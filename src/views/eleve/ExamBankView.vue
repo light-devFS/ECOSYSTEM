@@ -45,6 +45,7 @@
                 <th>Type</th>
                 <th>Matière</th>
                 <th>Niveau</th>
+                <th>Voir</th>
                 <th>Télécharger</th>
               </tr>
             </thead>
@@ -53,6 +54,9 @@
                 <td>{{ epreuve.type }}</td>
                 <td>{{ epreuve.matiere }}</td>
                 <td>{{ epreuve.niveau }}</td>
+                <td class="task-table__action">
+                  <BaseButton variant="secondary" @click="handleView(epreuve)">Voir</BaseButton>
+                </td>
                 <td>
                   <button type="button" class="icon-button" aria-label="Télécharger l'épreuve" @click="handleDownload(epreuve)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -82,6 +86,7 @@ import { useRouter } from 'vue-router'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import BaseSelect from '@/components/base/BaseSelect.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
 import { getExamBank } from '@/services/examBank/examBankService'
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
@@ -108,6 +113,10 @@ async function loadExamBank() {
 
 onMounted(loadExamBank)
 watch(filters, loadExamBank)
+
+function handleView(epreuve) {
+  // L'aperçu de l'épreuve (epreuve.id) sera construit à la prochaine maquette.
+}
 
 function handleDownload(epreuve) {
   // Le vrai téléchargement sera branché une fois le stockage des fichiers (Firebase Storage) disponible.

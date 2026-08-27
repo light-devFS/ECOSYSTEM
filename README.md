@@ -49,6 +49,9 @@ Chaque compte redirige automatiquement vers le tableau de bord de son espace apr
 **Espace administration** (`/admin/...`)
 - `dashboard` — Tableau de bord
 - `eleves-enseignants` — Eleves & Enseignants
+- `emploi-du-temps` — Emploi du temps
+- `statistiques` — Statistiques
+- `supervision` — Supervision des tickets
 
 Cette liste est mise à jour à chaque nouvelle page ajoutée — vérifie-la ici avant de demander "comment j'accède à telle page".
 

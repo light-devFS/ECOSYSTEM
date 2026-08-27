@@ -58,6 +58,23 @@
           </BaseButton>
         </form>
 
+        <div class="login-divider"><span>ou</span></div>
+
+        <button
+          type="button"
+          class="btn btn--google"
+          :disabled="isGoogleSubmitting"
+          @click="handleGoogleLogin"
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+            <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9C16.66 14.2 17.64 11.9 17.64 9.2z" />
+            <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.9v2.33A9 9 0 0 0 9 18z" />
+            <path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.9A9 9 0 0 0 0 9c0 1.45.35 2.83.9 4.03l3.05-2.33z" />
+            <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .9 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z" />
+          </svg>
+          {{ isGoogleSubmitting ? 'Connexion en cours…' : 'Se connecter avec Google' }}
+        </button>
+
         <p class="login-footer text-sm text-muted">
           Vous n'avez pas encore de compte ?
           <router-link to="/creer-un-compte">Créer un compte</router-link>
@@ -70,16 +87,17 @@
 <script setup>
 /**
  * LoginView
- * Le backend (Firebase) n'étant pas encore connecté, authService.login()
- * utilise des utilisateurs mockés. Le formulaire, la validation et la
- * gestion des états ne changeront pas quand Firebase sera branché :
- * seule l'implémentation d'authService devra évoluer.
+ * Connexion identifiant/e-mail/mot de passe : authService.login()
+ * utilise des utilisateurs mockés en attendant que le backend expose
+ * sa propre authentification.
+ * Connexion Google : authService.loginWithGoogle() est déjà réelle
+ * (Firebase Auth), voir le commentaire dans authService.js pour ses limites actuelles.
  */
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
-import { login } from '@/services/auth/authService'
+import { login, loginWithGoogle } from '@/services/auth/authService'
 
 const router = useRouter()
 
@@ -97,6 +115,7 @@ const errors = reactive({
 
 const formError = ref('')
 const isSubmitting = ref(false)
+const isGoogleSubmitting = ref(false)
 
 function validate() {
   errors.identifier = form.identifier.trim() ? '' : "L'identifiant est requis."
@@ -121,6 +140,19 @@ async function handleSubmit() {
     formError.value = error.message || 'Une erreur est survenue. Merci de réessayer.'
   } finally {
     isSubmitting.value = false
+  }
+}
+
+async function handleGoogleLogin() {
+  formError.value = ''
+  isGoogleSubmitting.value = true
+  try {
+    const user = await loginWithGoogle()
+    router.push(`/${user.role}/dashboard`)
+  } catch (error) {
+    formError.value = error.message || 'Une erreur est survenue. Merci de réessayer.'
+  } finally {
+    isGoogleSubmitting.value = false
   }
 }
 </script>
@@ -151,6 +183,23 @@ async function handleSubmit() {
   padding: var(--space-3);
   border-radius: var(--radius-sm);
   margin-bottom: var(--space-4);
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-border);
 }
 
 .login-footer {

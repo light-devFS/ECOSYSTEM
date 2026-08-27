@@ -19,3 +19,43 @@
   border-radius: var(--radius-sm);
   background-color: var(--color-bg);
 }
+
+.schedule-table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+}
+
+.schedule-table th,
+.schedule-table td {
+  border: 1px solid var(--color-border);
+  padding: var(--space-3);
+  text-align: center;
+}
+
+.schedule-table th {
+  background-color: var(--color-bg-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+.schedule-table td:first-child {
+  background-color: var(--color-bg-muted);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.panel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.panel-header-row .panel__title {
+  margin-bottom: 0;
+}
