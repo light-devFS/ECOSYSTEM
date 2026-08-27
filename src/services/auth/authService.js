@@ -1,63 +1,82 @@
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
-import { auth } from '@/services/firebase'
+/**
+ * authService
+ *
+ * Toute la logique d'authentification passe par ce fichier.
+ * Aucun composant Vue ne doit appeler Firebase directement : le jour
+ * où le backend sera branché, seule l'implémentation ci-dessous change
+ * (login/logout/getCurrentUser), l'interface reste identique.
+ *
+ * Connexion identifiant/e-mail/mot de passe : simulation avec les
+ * utilisateurs mockés, en attendant Firebase Authentication côté backend.
+ *
+ * Connexion Google : réelle, via Firebase Auth (le fichier firebase.js
+ * fourni par le backend est déjà utilisable pour ça).
+ */
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { mockUsers } from '@/mock/users'
 import { setCurrentUser, clearCurrentUser } from '@/services/auth/session'
+import { app } from '@/services/firebase'
+
+const SIMULATED_DELAY_MS = 600
+const auth = getAuth(app)
+const googleProvider = new GoogleAuthProvider()
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
 
 /**
- * Connexion avec Firebase Auth
+ * Tente une connexion.
+ * @param {{ identifier: string, email: string, password: string }} credentials
+ * @returns {Promise<{ id: string, name: string, role: string }>}
+ * @throws {Error} avec un message destiné à être affiché à l'utilisateur
  */
 export async function login(credentials) {
-  const { email, password } = credentials
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    const { uid, displayName, email: userEmail } = userCredential.user
+  await delay(SIMULATED_DELAY_MS)
 
-    const user = {
-      id: uid,
-      name: displayName || 'Utilisateur',
-      email: userEmail,
-      role: 'eleve', // sera amélioré plus tard avec un doc Firestore
-    }
-    setCurrentUser(user)
-    return user
-  } catch (error) {
-    let message = 'Une erreur est survenue lors de la connexion.'
-    switch (error.code) {
-      case 'auth/user-not-found':
-        message = 'Aucun utilisateur trouvé avec cet email.'
-        break
-      case 'auth/wrong-password':
-        message = 'Mot de passe incorrect.'
-        break
-      case 'auth/invalid-email':
-        message = 'Adresse email invalide.'
-        break
-      case 'auth/too-many-requests':
-        message = 'Trop de tentatives. Réessaie plus tard.'
-        break
-      default:
-        message = error.message
-    }
-    throw new Error(message)
+  const user = mockUsers.find(
+    (candidate) =>
+      candidate.identifier === credentials.identifier && candidate.email === credentials.email
+  )
+
+  if (!user || user.password !== credentials.password) {
+    throw new Error('Identifiant, e-mail ou mot de passe incorrect.')
   }
+
+  const { password, ...safeUser } = user
+  setCurrentUser(safeUser)
+  return safeUser
+}
+
+/**
+ * Connexion via Google (Firebase Auth réel).
+ * Le rôle est fixé à "eleve" par défaut pour l'instant : il n'existe
+ * pas encore de profil backend qui associe un compte Google à un rôle
+ * (élève/parent/prof/admin). À remplacer par une lecture Firestore du
+ * profil utilisateur dès que le backend l'expose.
+ * @returns {Promise<{ id: string, name: string, email: string, role: string }>}
+ * @throws {Error} avec un message destiné à être affiché à l'utilisateur
+ */
+export async function loginWithGoogle() {
+  let result
+  try {
+    result = await signInWithPopup(auth, googleProvider)
+  } catch (error) {
+    throw new Error('La connexion avec Google a échoué. Merci de réessayer.')
+  }
+
+  const firebaseUser = result.user
+  const user = {
+    id: firebaseUser.uid,
+    name: firebaseUser.displayName || 'Utilisateur Google',
+    email: firebaseUser.email,
+    role: 'eleve',
+  }
+  setCurrentUser(user)
+  return user
 }
 
 export async function logout() {
-  await signOut(auth)
+  await delay(200)
   clearCurrentUser()
-}
-
-export function initAuthListener() {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const userData = {
-        id: user.uid,
-        name: user.displayName || 'Utilisateur',
-        email: user.email,
-        role: 'eleve',
-      }
-      setCurrentUser(userData)
-    } else {
-      clearCurrentUser()
-    }
-  })
 }

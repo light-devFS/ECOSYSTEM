@@ -100,6 +100,24 @@ const routes = [
     meta: { role: 'admin' },
     component: () => import('@/views/admin/PeopleView.vue'),
   },
+  {
+    path: '/admin/emploi-du-temps',
+    name: 'admin-emploi-du-temps',
+    meta: { role: 'admin' },
+    component: () => import('@/views/admin/ScheduleView.vue'),
+  },
+  {
+    path: '/admin/statistiques',
+    name: 'admin-statistiques',
+    meta: { role: 'admin' },
+    component: () => import('@/views/admin/StatisticsView.vue'),
+  },
+  {
+    path: '/admin/supervision',
+    name: 'admin-supervision',
+    meta: { role: 'admin' },
+    component: () => import('@/views/admin/SupervisionView.vue'),
+  },
 ]
 
 const router = createRouter({
