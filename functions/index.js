@@ -1,32 +1,136 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+/* eslint-disable*/
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const axios = require("axios");
 
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+admin.initializeApp();
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({maxInstances: 10});
+// ============================================
+// 1. Fonction déclenchée à la création d'un utilisateur
+// ============================================
+exports.createUserDocument = functions.auth.user().onCreate(async (user) => {
+  const uid = user.uid;
+  const email = user.email || "email-inconnu@exemple.com";
+  const displayName = user.displayName || "Élève";
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+  console.log(`Création du document pour l'utilisateur : ${email} (UID: ${uid})`);
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+  try {
+    await admin.firestore().collection("users").doc(uid).set({
+      displayName,
+      email,
+      role: "eleve",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      progress: {
+        overall: 0,
+        streak: 0,
+      },
+      subjects: {
+        math: 0,
+        philosophy: 0,
+        english: 0,
+        svt: 0,
+      },
+    });
+
+    console.log(`✅ Document utilisateur créé avec succès pour ${email}`);
+  } catch (error) {
+    console.error(`❌ Erreur lors de la création du document pour ${email} :`, error);
+  }
+});
+
+// ============================================
+// 2. Fonction callable : Tuteur IA avec Gemini
+// ============================================
+exports.tutorAI = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "Vous devez être connecté pour utiliser le tuteur IA.",
+    );
+  }
+
+  const { message } = data;
+  const uid = context.auth.uid;
+
+  if (!message || message.trim().length === 0) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "Le message ne peut pas être vide.",
+    );
+  }
+
+  console.log(`Tuteur IA - Utilisateur ${uid} : ${message}`);
+
+  try {
+    // Enregistrer le message de l'élève
+    await admin.firestore().collection("chatHistory").add({
+      userId: uid,
+      author: "eleve",
+      text: message,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    // Récupérer la clé API Gemini
+    const geminiApiKey = functions.config().gemini.key;
+    if (!geminiApiKey) {
+      console.error("Clé API Gemini non configurée.");
+      throw new Error("Clé API Gemini non configurée.");
+    }
+
+    // Appeler l'API Gemini
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`,
+      {
+        contents: [
+          {
+            parts: [
+              {
+                text: `Tu es un tuteur scolaire bienveillant. Réponds à la question suivante de manière claire, pédagogique et adaptée à un élève de lycée. Question : ${message}`,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+
+    const replyText = response.data.candidates[0].content.parts[0].text;
+
+    // Enregistrer la réponse du tuteur
+    const replyRef = await admin.firestore().collection("chatHistory").add({
+      userId: uid,
+      author: "tuteur",
+      text: replyText,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    console.log(`Réponse envoyée à l'utilisateur ${uid}`);
+
+    return {
+      id: replyRef.id,
+      author: "tuteur",
+      text: replyText,
+    };
+  } catch (error) {
+    console.error("Erreur Tuteur IA :", error);
+
+    const errorMessage = "Désolé, je n'ai pas pu traiter ta question pour le moment. Réessaie plus tard.";
+
+    await admin.firestore().collection("chatHistory").add({
+      userId: uid,
+      author: "tuteur",
+      text: errorMessage,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    throw new functions.https.HttpsError(
+      "internal",
+      "Erreur lors du traitement de la requête.",
+    );
+  }
+});
