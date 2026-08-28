@@ -264,3 +264,88 @@ exports.createAssignment = onCall(async (request) => {
   console.log(`📚 Devoir créé : ${title} (${classe}) par ${user.displayName} — ${count} élève(s)`);
   return { ok: true, count, classe };
 });
+
+const SUIVIS = ["nouveau", "intervention", "sans-reponse", "cloture"];
+
+// Fait évoluer le suivi d'un ticket pédagogique et enregistre une note
+// d'intervention (réservé au professeur concerné ou à un admin).
+exports.updateTicketStatut = onCall(async (request) => {
+  const data = request.data || {};
+  const auth = requireAuth(request);
+  const user = await getUserWithRole(auth.uid);
+  requireRole(user.role, ["professeur", "admin"]);
+
+  const ticketId = (data.ticketId || "").trim();
+  if (!ticketId) {
+    throw new HttpsError("invalid-argument", "Le champ « ticketId » est obligatoire.");
+  }
+
+  const ticketRef = db.collection("tickets").doc(ticketId);
+  const ticketSnap = await ticketRef.get();
+  if (!ticketSnap.exists) {
+    throw new HttpsError("not-found", "Ticket introuvable.");
+  }
+  const ticket = ticketSnap.data();
+
+  const memeMatiere = ticket.matiere && ticket.matiere === user.matiere;
+  const nomProf = user.displayName || "";
+  const nomAssigne = ticket.professeur && ticket.professeur.includes(nomProf);
+  if (user.role !== "admin" && !memeMatiere && !nomAssigne) {
+    throw new HttpsError("permission-denied", "Ce ticket ne relève pas de vos matières.");
+  }
+
+  const patch = { updatedAt: FieldValue.serverTimestamp() };
+
+  if (data.suivi) {
+    if (!SUIVIS.includes(data.suivi)) {
+      throw new HttpsError("invalid-argument", `Statut de suivi invalide : ${data.suivi}`);
+    }
+    patch.suivi = data.suivi;
+  }
+
+  if (data.note && data.note.trim()) {
+    patch.interventionNote = data.note.trim();
+    patch.interventionBy = nomProf || "Professeur";
+    patch.interventionAt = Timestamp.now();
+  }
+
+  await ticketRef.update(patch);
+
+  console.log(`🎫 Ticket ${ticketId} mis à jour par ${nomProf} (suivi:${patch.suivi || "inchangé"})`);
+  return { ok: true, ticketId, suivi: patch.suivi || ticket.suivi };
+});
+
+// Crée un ticket groupé lié à une notion problématique détectée dans une
+// classe (réservé prof/admin). Destinataire : la classe entière.
+exports.createTicketGroupe = onCall(async (request) => {
+  const data = request.data || {};
+  const auth = requireAuth(request);
+  const user = await getUserWithRole(auth.uid);
+  requireRole(user.role, ["professeur", "admin"]);
+
+  const notion = (data.notion || "").trim();
+  const classe = (data.classe || "").trim();
+  const matiere = (data.matiere || "").trim();
+
+  for (const champ of [["notion", notion], ["classe", classe], ["matiere", matiere]]) {
+    if (!champ[1]) {
+      throw new HttpsError("invalid-argument", `Le champ « ${champ[0]} » est obligatoire.`);
+    }
+  }
+
+  const ref = await db.collection("tickets").add({
+    eleve: `Groupe — ${classe}`,
+    notion,
+    matiere,
+    classe,
+    professeur: user.displayName || "Professeur",
+    statut: "en-cours",
+    suivi: "nouveau",
+    priorite: data.priorite || "normale",
+    group: true,
+    createdAt: FieldValue.serverTimestamp(),
+  });
+
+  console.log(`🎫 Ticket groupé créé : ${notion} (${classe}) par ${user.displayName}`);
+  return { ok: true, id: ref.id, notion, classe };
+});

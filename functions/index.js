@@ -29,6 +29,8 @@ exports.signalExam = exams.signalExam;
 // ADMINISTRATION & PROFESSEURS
 exports.seedAdminData = admin.seedAdminData;
 exports.createAssignment = admin.createAssignment;
+exports.updateTicketStatut = admin.updateTicketStatut;
+exports.createTicketGroupe = admin.createTicketGroupe;
 
 // PARTIE ÉLÈVE
 exports.seedCourses = courses.seedCourses;
