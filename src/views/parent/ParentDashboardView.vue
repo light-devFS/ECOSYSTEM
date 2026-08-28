@@ -33,7 +33,7 @@
                   <p class="alert-row__title">{{ alerte.titre }}</p>
                   <p class="alert-row__description">{{ alerte.description }}</p>
                 </div>
-                <BaseButton variant="secondary">{{ alerte.action }}</BaseButton>
+                <BaseButton variant="secondary" @click="handleAlerte(alerte)">{{ alerte.action }}</BaseButton>
               </div>
             </div>
           </section>
@@ -84,5 +84,9 @@ async function handleLogout() {
   await logout()
   clearCurrentUser()
   router.push('/connexion')
+}
+
+function handleAlerte(alerte) {
+  if (alerte.to) router.push(alerte.to)
 }
 </script>

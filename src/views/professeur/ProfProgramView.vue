@@ -7,6 +7,8 @@
 
       <div class="app-shell__content">
         <p class="text-muted">Programme officiel par pays, niveau et matière, et planification des séances.</p>
+
+        <p v-if="notice" class="notice" role="status">{{ notice }}</p>
         <BaseBadge label="Données démo — la souscription au programme officiel sera connectée prochainement" variant="neutral" />
 
         <section class="panel mt-panel">
@@ -35,7 +37,7 @@
                   <td class="cell-strong">{{ chapitre.titre }}</td>
                   <td><BaseBadge :label="chapitre.statut" :variant="statusTone[chapitre.statut]" /></td>
                   <td>{{ chapitre.contenus }}</td>
-                  <td><BaseButton variant="secondary" disabled>Ouvrir</BaseButton></td>
+                  <td><BaseButton variant="secondary" @click="ouvrirChapitre(chapitre)">Ouvrir</BaseButton></td>
                 </tr>
               </tbody>
             </table>
@@ -84,6 +86,12 @@ const chapitres = ref([
   { titre: "Géométrie dans l'espace", statut: 'À planifier', contenus: 'En attente de validation' },
 ])
 
+const notice = ref('')
+
+function ouvrirChapitre(chapitre) {
+  notice.value = `Détail du chapitre « ${chapitre.titre} » — contenu démo à connecter avec la souscription au programme officiel.`
+}
+
 async function handleLogout() {
   await logout()
   clearCurrentUser()
@@ -99,5 +107,13 @@ async function handleLogout() {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-4);
+}
+.notice {
+  padding: var(--space-3);
+  margin-bottom: var(--space-4);
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
 }
 </style>

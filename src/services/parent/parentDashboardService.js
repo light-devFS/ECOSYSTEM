@@ -65,6 +65,7 @@ export async function getParentDashboard() {
             titre: 'Difficulté persistante détectée',
             description: `${notionsFaibles[0].competence} · ${notionsFaibles[0].matiere}`,
             action: 'Ticket ouvert',
+            to: '/parent/evolution',
           }]
       : []),
     ...(devoirsRetard > 0
@@ -73,6 +74,7 @@ export async function getParentDashboard() {
             titre: 'Devoir en retard',
             description: `${devoirsRetard} devoir(s) dont l’échéance est dépassée`,
             action: 'À suivre',
+            to: '/parent/devoirs',
           }]
       : []),
   ]

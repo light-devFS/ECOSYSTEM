@@ -41,7 +41,7 @@
                 {{ dashboard.tuteurIA.difficulteDetectee }}
               </p>
               <p class="tutor-panel__mastery">Maîtrise : {{ dashboard.tuteurIA.maitrise }}%</p>
-              <BaseButton variant="secondary">Commencer</BaseButton>
+              <BaseButton variant="secondary" @click="router.push('/eleve/tuteur-ia')">Commencer</BaseButton>
             </section>
           </div>
 
@@ -54,7 +54,7 @@
                   <td>{{ tache.type }} — {{ tache.titre }}</td>
                   <td>{{ tache.date }}</td>
                   <td class="task-table__action">
-                    <BaseButton variant="secondary">Démarrer</BaseButton>
+                    <BaseButton variant="secondary" @click="handleDemarrer(tache)">Démarrer</BaseButton>
                   </td>
                 </tr>
               </tbody>
@@ -111,5 +111,16 @@ async function handleLogout() {
   await logout()
   clearCurrentUser()
   router.push('/connexion')
+}
+
+function routeForTache(tache) {
+  const type = (tache.type || '').toLowerCase()
+  if (type.includes('révi') || type.includes('exo')) return '/eleve/exercices'
+  if (type.includes('devoir')) return '/eleve/cours'
+  return '/eleve/progression'
+}
+
+function handleDemarrer(tache) {
+  router.push(routeForTache(tache))
 }
 </script>
