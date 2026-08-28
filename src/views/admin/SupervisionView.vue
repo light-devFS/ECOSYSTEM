@@ -47,6 +47,10 @@
           </table>
           <p v-else class="task-table__empty">Aucun ticket ne correspond à ces filtres.</p>
         </section>
+
+        <div class="actions-end">
+          <BaseButton @click="handleOpenMessaging">Messagerie</BaseButton>
+        </div>
       </div>
     </div>
   </div>
@@ -59,6 +63,7 @@ import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import BaseSelect from '@/components/base/BaseSelect.vue'
 import BaseBadge from '@/components/base/BaseBadge.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
 import { getTicketsSupervision } from '@/services/admin/adminTicketsSupervisionService'
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
@@ -103,6 +108,10 @@ async function loadTickets() {
 
 onMounted(loadTickets)
 watch(filters, loadTickets)
+
+function handleOpenMessaging() {
+  // La messagerie administration (contenu de la page) sera construite à la prochaine maquette.
+}
 
 async function handleLogout() {
   await logout()
