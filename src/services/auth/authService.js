@@ -30,7 +30,7 @@ const googleProvider = new GoogleAuthProvider()
  * Charge le profil Firestore d'un utilisateur (rôle, nom, identifiant,
  * matière et classes pour les professeurs).
  * @param {string} uid
- * @returns {Promise<{ id: string, uid: string, name: string, email: string, role: string, identifier: string|null, matiere: string|null, classe: string|null, classes: string[] }|null>}
+ * @returns {Promise<{ id: string, uid: string, name: string, email: string, role: string, identifier: string|null, matiere: string|null, classe: string|null, classes: string[], enfants: string[] }|null>}
  */
 async function loadProfile(uid) {
   const userDoc = await getDoc(doc(db, 'users', uid))
@@ -46,6 +46,7 @@ async function loadProfile(uid) {
     matiere: data.matiere || null,
     classe: data.classe || null,
     classes: data.classes || [],
+    enfants: data.enfants || [],
   }
 }
 
