@@ -7,6 +7,7 @@
 const users = require("./src/users");
 const tutor = require("./src/tutor");
 const exams = require("./src/exams");
+const admin = require("./src/admin");
 const courses = require("./src/eleve/courses");
 const exercises = require("./src/eleve/exercises");
 const progression = require("./src/eleve/progression");
@@ -24,6 +25,10 @@ exports.tutorAI = tutor.tutorAI;
 exports.seedExamBank = exams.seedExamBank;
 exports.depositExam = exams.depositExam;
 exports.signalExam = exams.signalExam;
+
+// ADMINISTRATION & PROFESSEURS
+exports.seedAdminData = admin.seedAdminData;
+exports.createAssignment = admin.createAssignment;
 
 // PARTIE ÉLÈVE
 exports.seedCourses = courses.seedCourses;

@@ -64,6 +64,9 @@ exports.createUserAccount = onCall(async (request) => {
   const role = data.role || "eleve";
   const password = data.password || "";
   const identifier = (data.identifier || "").trim();
+  const classe = (data.classe || "").trim();
+  const matiere = (data.matiere || "").trim();
+  const classes = Array.isArray(data.classes) ? data.classes : [];
 
   if (!displayName) {
     throw new HttpsError("invalid-argument", "Le nom complet est obligatoire.");
@@ -117,11 +120,12 @@ exports.createUserAccount = onCall(async (request) => {
   });
 
   // --- Créer le profil Firestore (set complet : le rôle écrit ici gagne)
-  await admin.firestore().collection("users").doc(userRecord.uid).set({
+  const profil = {
     displayName,
     email,
     identifier: finalIdentifier,
     role,
+    statut: "actif",
     createdAt: FieldValue.serverTimestamp(),
     progress: {
       overall: 0,
@@ -135,7 +139,17 @@ exports.createUserAccount = onCall(async (request) => {
       "SVT": 0,
       "Anglais": 0,
     },
-  });
+  };
+
+  // Elève : classe. Professeur : matière enseignée + classes assurées.
+  if (role === "eleve") {
+    profil.classe = classe;
+  } else if (role === "professeur") {
+    profil.matiere = matiere;
+    profil.classes = classes;
+  }
+
+  await admin.firestore().collection("users").doc(userRecord.uid).set(profil);
 
   console.log(`✅ Compte créé : ${email} — identifiant ${finalIdentifier} (rôle ${role})`);
 
