@@ -65,6 +65,12 @@ const routes = [
     component: () => import('@/views/eleve/ExamBankView.vue'),
   },
   {
+    path: '/professeur/dashboard',
+    name: 'prof-dashboard',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfDashboardView.vue'),
+  },
+  {
     path: '/parent/dashboard',
     name: 'parent-dashboard',
     meta: { role: 'parent' },

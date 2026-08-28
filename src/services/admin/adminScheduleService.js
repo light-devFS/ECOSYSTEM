@@ -1,12 +1,28 @@
-import { mockSchedule } from '@/mock/adminSchedule'
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore'
+import { db } from '@/services/firebase'
 
 /**
  * adminScheduleService
- * À remplacer par une lecture Firestore (emploi du temps par classe)
- * quand le backend sera disponible. Le paramètre classe est déjà
- * prévu pour ce filtrage futur côté serveur.
+ * Emploi du temps stocké dans "schedule/{classe}" + liste des classes
+ * réelles (collection "classes").
  */
+
 export async function getSchedule(classe) {
-  await new Promise((resolve) => setTimeout(resolve, 400))
-  return mockSchedule
+  const classesSnap = await getDocs(collection(db, 'classes'))
+  const classes = []
+  classesSnap.forEach((docu) => {
+    const name = docu.data().name
+    if (name) classes.push(name)
+  })
+
+  const ref = doc(db, 'schedule', classe)
+  const snap = await getDoc(ref)
+  const data = snap.exists() ? snap.data() : {}
+
+  return {
+    classes,
+    jours: Array.isArray(data.jours) ? data.jours : ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'],
+    creneaux: Array.isArray(data.creneaux) ? data.creneaux : [],
+    evenements: Array.isArray(data.evenements) ? data.evenements : [],
+  }
 }

@@ -1,60 +1,38 @@
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/services/firebase'
 
 /**
- * Récupère les épreuves depuis Firestore avec filtrage
+ * examBankService
+ * Banque d'épreuves lue dans Firestore (collection "exams").
+ * Seules les épreuves publiées sont visibles ; les filtres de la vue
+ * sont reconstruits à partir des vraies valeurs présentes.
  */
+
 export async function getExamBank(filters = {}) {
-  // Construire la requête de base
-  let q = collection(db, 'examBank')
-  const conditions = []
-
-  if (filters.pays && filters.pays !== 'Toutes') {
-    conditions.push(where('pays', '==', filters.pays))
-  }
-  if (filters.niveau && filters.niveau !== 'Tous') {
-    conditions.push(where('niveau', '==', filters.niveau))
-  }
-  if (filters.matiere && filters.matiere !== 'Toutes') {
-    conditions.push(where('matiere', '==', filters.matiere))
-  }
-  if (filters.type && filters.type !== 'Tous') {
-    conditions.push(where('type', '==', filters.type))
-  }
-
-  // Appliquer les conditions
-  if (conditions.length > 0) {
-    q = query(collection(db, 'examBank'), ...conditions)
-  }
-
+  const q = query(collection(db, 'exams'), where('statut', '==', 'publie'))
   const snapshot = await getDocs(q)
-  const resultats = []
+
+  const epreuves = []
   snapshot.forEach((doc) => {
-    resultats.push({ id: doc.id, ...doc.data() })
+    epreuves.push({ id: doc.id, ...doc.data() })
   })
 
-  // Récupérer toutes les valeurs possibles pour les filtres (depuis Firestore)
-  const allDocs = await getDocs(collection(db, 'examBank'))
-  const paysSet = new Set()
-  const niveauxSet = new Set()
-  const matieresSet = new Set()
-  const typesSet = new Set()
+  const distinct = (values) => [...new Set(values.filter(Boolean))]
+  const niveaux = distinct(epreuves.map((e) => e.niveau))
+  const matieres = ['Toutes', ...distinct(epreuves.map((e) => e.matiere))]
+  const typesEpreuve = distinct(epreuves.map((e) => e.type))
+  const pays = distinct(epreuves.map((e) => e.pays))
 
-  allDocs.forEach((doc) => {
-    const data = doc.data()
-    if (data.pays) paysSet.add(data.pays)
-    if (data.niveau) niveauxSet.add(data.niveau)
-    if (data.matiere) matieresSet.add(data.matiere)
-    if (data.type) typesSet.add(data.type)
+  const resultats = epreuves.filter((item) => {
+    const matiereOk = !filters.matiere || filters.matiere === 'Toutes' || item.matiere === filters.matiere
+    const typeOk = !filters.type || item.type === filters.type
+    const niveauOk = !filters.niveau || item.niveau === filters.niveau
+    const paysOk = !filters.pays || item.pays === filters.pays
+    return matiereOk && typeOk && niveauOk && paysOk
   })
 
   return {
-    filtres: {
-      pays: Array.from(paysSet),
-      niveaux: Array.from(niveauxSet),
-      matieres: Array.from(matieresSet),
-      typesEpreuve: Array.from(typesSet),
-    },
+    filtres: { pays, niveaux, matieres, typesEpreuve },
     total: resultats.length,
     resultats,
   }

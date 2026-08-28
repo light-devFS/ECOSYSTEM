@@ -80,6 +80,7 @@ import BaseInput from '@/components/base/BaseInput.vue'
 import BaseTextarea from '@/components/base/BaseTextarea.vue'
 import { getTicketsSupervision } from '@/services/admin/adminTicketsSupervisionService'
 import { sendMessage } from '@/services/admin/adminMessagingService'
+import { getClasses } from '@/services/admin/adminPeopleService'
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
 import { adminNavItems } from '@/config/nav/adminNavItems'
@@ -100,11 +101,7 @@ const statutOptions = [
   { value: 'sans-reponse', label: 'Sans reponse(5j)' },
   { value: 'nouveau', label: 'Nouveau' },
 ]
-const classeOptions = [
-  { value: 'toutes', label: 'Toutes' },
-  { value: 'Terminale D', label: 'Terminale D' },
-  { value: 'Première S', label: 'Première S' },
-]
+const classeOptions = ref([{ value: 'toutes', label: 'Toutes' }])
 const prioriteOptions = [
   { value: 'toutes', label: 'Toutes' },
   { value: 'normale', label: 'Normale' },
@@ -121,7 +118,15 @@ async function loadTickets() {
   isLoading.value = false
 }
 
-onMounted(loadTickets)
+async function loadClasses() {
+  const classes = await getClasses()
+  classeOptions.value = [{ value: 'toutes', label: 'Toutes' }, ...classes.map((c) => ({ value: c, label: c }))]
+}
+
+onMounted(() => {
+  loadClasses()
+  loadTickets()
+})
 watch(filters, loadTickets)
 
 const isMessagingModalOpen = ref(false)
