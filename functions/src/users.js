@@ -128,10 +128,12 @@ exports.createUserAccount = onCall(async (request) => {
       streak: 0,
     },
     subjects: {
-      math: 0,
-      philosophy: 0,
-      english: 0,
-      svt: 0,
+      "Mathématiques": 0,
+      "Français": 0,
+      "Physique-Chimie": 0,
+      "Histoire-Géographie": 0,
+      "SVT": 0,
+      "Anglais": 0,
     },
   });
 
