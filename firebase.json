@@ -15,19 +15,5 @@
         "npm --prefix \"$RESOURCE_DIR\" run lint"
       ]
     }
-  ],
-  "emulators": {
-    "auth": {
-      "port": 9099
-    },
-    "firestore": {
-      "port": 8090
-    },
-    "functions": {
-      "port": 5001
-    },
-    "ui": {
-      "enabled": true
-    }
-  }
+  ]
 }
