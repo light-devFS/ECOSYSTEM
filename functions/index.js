@@ -8,6 +8,7 @@ const users = require("./src/users");
 const tutor = require("./src/tutor");
 const exams = require("./src/exams");
 const admin = require("./src/admin");
+const parent = require("./src/parent");
 const courses = require("./src/eleve/courses");
 const exercises = require("./src/eleve/exercises");
 const progression = require("./src/eleve/progression");
@@ -31,6 +32,10 @@ exports.seedAdminData = admin.seedAdminData;
 exports.createAssignment = admin.createAssignment;
 exports.updateTicketStatut = admin.updateTicketStatut;
 exports.createTicketGroupe = admin.createTicketGroupe;
+
+// ESPACE PARENT
+exports.seedParentData = parent.seedParentData;
+exports.linkChildToParent = parent.linkChildToParent;
 
 // PARTIE ÉLÈVE
 exports.seedCourses = courses.seedCourses;
