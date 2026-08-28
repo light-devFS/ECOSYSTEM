@@ -1,0 +1,33 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 18, 26, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  z-index: 100;
+}
+
+.modal-panel {
+  width: 100%;
+  max-width: 26rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+  padding: var(--space-6);
+}
+
+.modal-panel__title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: var(--font-size-base);
+  letter-spacing: 0.03em;
+  margin-bottom: var(--space-5);
+}
+
+.modal-panel .btn {
+  margin-top: var(--space-2);
+}

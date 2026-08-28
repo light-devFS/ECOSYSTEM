@@ -17,7 +17,7 @@
                 Rejoins un groupe permanent ou accepte une proposition d'aide de l'IA.
               </p>
             </div>
-            <BaseButton @click="handleCreateGroup">Créer un groupe</BaseButton>
+            <BaseButton @click="isCreateModalOpen = true">Créer un groupe</BaseButton>
           </div>
 
           <div class="panel-grid">
@@ -39,18 +39,37 @@
         </template>
       </div>
     </div>
+
+    <BaseModal v-model="isCreateModalOpen" title="Nouveau groupe">
+      <form @submit.prevent="handleSubmitGroup">
+        <BaseInput v-model="form.nom" label="Nom du groupe :" />
+        <BaseSelect
+          v-model="form.membres"
+          label="Membres du groupe :"
+          multiple
+          stacked
+          :options="membreOptions"
+        />
+        <BaseSelect v-model="form.matiere" label="Matiere" stacked :options="matiereOptions" />
+        <BaseButton type="submit">Creer</BaseButton>
+      </form>
+    </BaseModal>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
+import BaseModal from '@/components/base/BaseModal.vue'
+import BaseInput from '@/components/base/BaseInput.vue'
+import BaseSelect from '@/components/base/BaseSelect.vue'
 import GroupCard from '@/components/education/GroupCard.vue'
 import AiSuggestionCard from '@/components/education/AiSuggestionCard.vue'
 import { getGroups, getAiSuggestion } from '@/services/groups/groupService'
+import { mockClassmates, mockGroupMatieres } from '@/mock/groups'
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
 import { eleveNavItems } from '@/config/nav/eleveNavItems'
@@ -64,6 +83,11 @@ const groups = ref([])
 const aiSuggestion = ref(null)
 const isLoading = ref(true)
 const loadError = ref('')
+
+const isCreateModalOpen = ref(false)
+const form = reactive({ nom: '', membres: [], matiere: '' })
+const membreOptions = mockClassmates.map((nom) => ({ value: nom, label: nom }))
+const matiereOptions = mockGroupMatieres.map((matiere) => ({ value: matiere, label: matiere }))
 
 onMounted(async () => {
   try {
@@ -81,8 +105,21 @@ function handleOpenGroup(group) {
   // La page de détail d'un groupe (group.id) sera construite à la prochaine maquette.
 }
 
-function handleCreateGroup() {
-  // Le formulaire de création de groupe sera construit à la prochaine maquette.
+function handleSubmitGroup() {
+  if (!form.nom.trim()) return
+
+  groups.value.unshift({
+    id: `g-${Date.now()}`,
+    titre: form.nom.trim(),
+    matiere: form.matiere || 'Non précisée',
+    membres: form.membres.length,
+    description: `Membres : ${form.membres.join(', ') || 'aucun pour le moment'}.`,
+  })
+
+  form.nom = ''
+  form.membres = []
+  form.matiere = ''
+  isCreateModalOpen.value = false
 }
 
 function handleAcceptSuggestion() {

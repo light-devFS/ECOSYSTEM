@@ -17,7 +17,7 @@
                 Le pont entre l'accompagnement automatisé et l'intervention humaine.
               </p>
             </div>
-            <BaseButton @click="handleCreateTicket">Nouveau ticket</BaseButton>
+            <BaseButton @click="isCreateModalOpen = true">Nouveau ticket</BaseButton>
           </div>
 
           <div class="panel-grid">
@@ -60,18 +60,33 @@
         </template>
       </div>
     </div>
+
+    <BaseModal v-model="isCreateModalOpen" title="Nouveau ticket">
+      <form @submit.prevent="handleSubmitTicket">
+        <BaseInput v-model="form.notion" label="Notion" />
+        <BaseSelect v-model="form.destinataire" label="Destinataire" stacked :options="professorOptions" />
+        <BaseSelect v-model="form.matiere" label="Matiere" stacked :options="matiereOptions" />
+        <BaseTextarea v-model="form.description" label="Description" placeholder="Decrit tes imcomprehensions" />
+        <BaseButton type="submit">Envoyer</BaseButton>
+      </form>
+    </BaseModal>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseBadge from '@/components/base/BaseBadge.vue'
+import BaseModal from '@/components/base/BaseModal.vue'
+import BaseInput from '@/components/base/BaseInput.vue'
+import BaseSelect from '@/components/base/BaseSelect.vue'
+import BaseTextarea from '@/components/base/BaseTextarea.vue'
 import VerticalTimeline from '@/components/base/VerticalTimeline.vue'
 import { getTickets } from '@/services/tickets/ticketService'
+import { mockProfessors, mockTicketMatieres } from '@/mock/tickets'
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
 import { eleveNavItems } from '@/config/nav/eleveNavItems'
@@ -89,6 +104,11 @@ const isLoading = ref(true)
 const loadError = ref('')
 const selectedTicketId = ref(null)
 
+const isCreateModalOpen = ref(false)
+const form = reactive({ notion: '', destinataire: '', matiere: '', description: '' })
+const professorOptions = mockProfessors.map((nom) => ({ value: nom, label: nom }))
+const matiereOptions = mockTicketMatieres.map((matiere) => ({ value: matiere, label: matiere }))
+
 onMounted(async () => {
   try {
     tickets.value = await getTickets()
@@ -104,8 +124,43 @@ const selectedTicket = computed(() =>
   tickets.value.find((ticket) => ticket.id === selectedTicketId.value)
 )
 
-function handleCreateTicket() {
-  // Le formulaire de création de ticket sera construit à la prochaine maquette.
+function handleSubmitTicket() {
+  if (!form.notion.trim()) return
+
+  const newTicket = {
+    id: `t-${Date.now()}`,
+    notion: form.notion.trim(),
+    matiere: form.matiere || 'Non précisée',
+    statut: 'en-cours',
+    professeur: form.destinataire || 'Non assigné',
+    timeline: [
+      {
+        id: 'creation',
+        label: 'Création',
+        description: `Ticket lié à la notion « ${form.notion.trim()} ».`,
+        statut: 'fait',
+      },
+      {
+        id: 'notification',
+        label: 'Notification',
+        description: form.destinataire ? `${form.destinataire} a été alerté.` : 'En attente',
+        statut: form.destinataire ? 'fait' : 'attente',
+      },
+      { id: 'intervention', label: 'Intervention', description: 'En attente', statut: 'attente' },
+      { id: 'suivi', label: 'Suivi', description: 'En attente', statut: 'attente' },
+      { id: 'validation', label: 'Validation', description: 'En attente', statut: 'attente' },
+      { id: 'cloture', label: 'Clôture', description: 'En attente', statut: 'attente' },
+    ],
+  }
+
+  tickets.value.unshift(newTicket)
+  selectedTicketId.value = newTicket.id
+
+  form.notion = ''
+  form.destinataire = ''
+  form.matiere = ''
+  form.description = ''
+  isCreateModalOpen.value = false
 }
 
 async function handleLogout() {

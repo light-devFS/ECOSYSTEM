@@ -59,3 +59,14 @@
 .panel-header-row .panel__title {
   margin-bottom: 0;
 }
+
+.actions-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.actions-end .btn {
+  width: auto;
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+}

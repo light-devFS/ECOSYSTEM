@@ -21,3 +21,7 @@ export const mockAiSuggestion = {
   description: '2 camarades ayant une bonne maîtrise de cette notion',
   matiere: 'Mathématiques',
 }
+
+export const mockClassmates = ['Abdoul Ouro', 'Kossi Amenou', 'Ama Sossou', 'Boris Todji']
+
+export const mockGroupMatieres = ['Mathématiques', 'Physique-Chimie', 'SVT', 'Français', 'Anglais']

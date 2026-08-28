@@ -21,14 +21,6 @@
 
         <form novalidate @submit.prevent="handleSubmit">
           <BaseInput
-            id="login-identifier"
-            v-model="form.identifier"
-            label="Identifiant"
-            :error="errors.identifier"
-            :disabled="isSubmitting"
-          />
-
-          <BaseInput
             id="login-email"
             v-model="form.email"
             type="email"
@@ -60,20 +52,23 @@
 
         <div class="login-divider"><span>ou</span></div>
 
-        <button
-          type="button"
-          class="btn btn--google"
-          :disabled="isGoogleSubmitting"
-          @click="handleGoogleLogin"
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-            <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9C16.66 14.2 17.64 11.9 17.64 9.2z" />
-            <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.9v2.33A9 9 0 0 0 9 18z" />
-            <path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.9A9 9 0 0 0 0 9c0 1.45.35 2.83.9 4.03l3.05-2.33z" />
-            <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .9 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z" />
-          </svg>
-          {{ isGoogleSubmitting ? 'Connexion en cours…' : 'Se connecter avec Google' }}
-        </button>
+        <div class="login-google-row">
+          <button
+            type="button"
+            class="btn--google-icon"
+            :disabled="isGoogleSubmitting"
+            aria-label="Se connecter avec Google"
+            @click="handleGoogleLogin"
+          >
+            <svg width="20" height="20" viewBox="0 0 18 18" aria-hidden="true">
+              <path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9C16.66 14.2 17.64 11.9 17.64 9.2z" />
+              <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.9v2.33A9 9 0 0 0 9 18z" />
+              <path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.66 9c0-.59.1-1.17.29-1.7V4.97H.9A9 9 0 0 0 0 9c0 1.45.35 2.83.9 4.03l3.05-2.33z" />
+              <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .9 4.97L3.95 7.3C4.66 5.17 6.65 3.58 9 3.58z" />
+            </svg>
+          </button>
+        </div>
+        <p v-if="isGoogleSubmitting" class="text-muted text-sm login-google-status">Connexion en cours…</p>
 
         <p class="login-footer text-sm text-muted">
           Vous n'avez pas encore de compte ?
@@ -87,9 +82,9 @@
 <script setup>
 /**
  * LoginView
- * Connexion identifiant/e-mail/mot de passe : authService.login()
- * utilise des utilisateurs mockés en attendant que le backend expose
- * sa propre authentification.
+ * Connexion e-mail/mot de passe : authService.login() utilise des
+ * utilisateurs mockés en attendant que le backend expose sa propre
+ * authentification.
  * Connexion Google : authService.loginWithGoogle() est déjà réelle
  * (Firebase Auth), voir le commentaire dans authService.js pour ses limites actuelles.
  */
@@ -102,13 +97,11 @@ import { login, loginWithGoogle } from '@/services/auth/authService'
 const router = useRouter()
 
 const form = reactive({
-  identifier: '',
   email: '',
   password: '',
 })
 
 const errors = reactive({
-  identifier: '',
   email: '',
   password: '',
 })
@@ -118,10 +111,9 @@ const isSubmitting = ref(false)
 const isGoogleSubmitting = ref(false)
 
 function validate() {
-  errors.identifier = form.identifier.trim() ? '' : "L'identifiant est requis."
   errors.email = form.email.trim() ? '' : "L'adresse e-mail est requise."
   errors.password = form.password ? '' : 'Le mot de passe est requis.'
-  return !errors.identifier && !errors.email && !errors.password
+  return !errors.email && !errors.password
 }
 
 async function handleSubmit() {
@@ -131,7 +123,6 @@ async function handleSubmit() {
   isSubmitting.value = true
   try {
     const user = await login({
-      identifier: form.identifier.trim(),
       email: form.email.trim(),
       password: form.password,
     })
@@ -200,6 +191,16 @@ async function handleGoogleLogin() {
   flex: 1;
   height: 1px;
   background-color: var(--color-border);
+}
+
+.login-google-row {
+  display: flex;
+  justify-content: center;
+}
+
+.login-google-status {
+  text-align: center;
+  margin-top: var(--space-2);
 }
 
 .login-footer {

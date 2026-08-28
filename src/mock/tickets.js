@@ -30,3 +30,14 @@ export const mockTickets = [
     ],
   },
 ]
+
+export const mockProfessors = [
+  'M. Kodjo Aziaka',
+  'Mme Adjoa Lawson',
+  'Mme Essowè Bakoma',
+  'M. Sena Amégan',
+  'M. Yao Kpodar',
+  'Mme Julia Cole',
+]
+
+export const mockTicketMatieres = ['Mathématiques', 'Français', 'Physique-Chimie', 'Histoire-Géographie', 'SVT', 'Anglais']
