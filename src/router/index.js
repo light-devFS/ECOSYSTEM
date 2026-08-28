@@ -71,6 +71,36 @@ const routes = [
     component: () => import('@/views/professeur/ProfDashboardView.vue'),
   },
   {
+    path: '/professeur/tickets',
+    name: 'prof-tickets',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfTicketsView.vue'),
+  },
+  {
+    path: '/professeur/comprehension',
+    name: 'prof-comprehension',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfComprehensionView.vue'),
+  },
+  {
+    path: '/professeur/devoirs',
+    name: 'prof-devoirs',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfAssignmentsView.vue'),
+  },
+  {
+    path: '/professeur/programme',
+    name: 'prof-programme',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfProgramView.vue'),
+  },
+  {
+    path: '/professeur/contenus',
+    name: 'prof-contenus',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfContentsView.vue'),
+  },
+  {
     path: '/parent/dashboard',
     name: 'parent-dashboard',
     meta: { role: 'parent' },
