@@ -154,6 +154,48 @@ const routes = [
     meta: { role: 'admin' },
     component: () => import('@/views/admin/SupervisionView.vue'),
   },
+  {
+    path: '/professeur/dashboard',
+    name: 'professeur-dashboard',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfDashboardView.vue'),
+  },
+  {
+    path: '/professeur/comprehension',
+    name: 'professeur-comprehension',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ComprehensionView.vue'),
+  },
+  {
+    path: '/professeur/programme',
+    name: 'professeur-programme',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProgrammeView.vue'),
+  },
+  {
+    path: '/professeur/programme/:id',
+    name: 'professeur-chapitre-detail',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ChapterDetailView.vue'),
+  },
+  {
+    path: '/professeur/contenus',
+    name: 'professeur-contenus',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ContenusIAView.vue'),
+  },
+  {
+    path: '/professeur/devoirs',
+    name: 'professeur-devoirs',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/DevoirsView.vue'),
+  },
+  {
+    path: '/professeur/tickets',
+    name: 'professeur-tickets',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfTicketsView.vue'),
+  },
 ]
 
 const router = createRouter({

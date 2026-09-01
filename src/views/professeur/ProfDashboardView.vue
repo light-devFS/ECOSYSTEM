@@ -3,13 +3,18 @@
     <AppSidebar :nav-items="navItems" :user-name="userName" @logout="handleLogout" />
 
     <div class="app-shell__main">
+<<<<<<< Updated upstream
       <AppHeader eyebrow="ESPACE PROFESSEUR" title="Tableau de bord" :show-notifications="false" />
+=======
+      <AppHeader eyebrow="PROFESSEUR" title="Tableau de bord" :show-notifications="false" />
+>>>>>>> Stashed changes
 
       <div class="app-shell__content">
         <p v-if="isLoading" class="text-muted">Chargement…</p>
 
         <template v-else>
           <div>
+<<<<<<< Updated upstream
             <h2>Bonjour {{ userName }}</h2>
             <p class="text-muted">Vue d'ensemble de vos classes{{ session.user?.matiere ? ` de ${session.user.matiere}` : '' }}.</p>
           </div>
@@ -19,10 +24,34 @@
             <StatCard label="Compréhension moyenne" :value="`${dashboard.comprehensionMoyenne}%`" caption="+0 pt cette semaine" />
             <StatCard label="Devoirs à corriger" :value="dashboard.devoirsACorriger" :caption="dashboard.devoirsCaption" />
             <StatCard label="Tickets en attente" :value="dashboard.ticketsEnAttente" :caption="`${dashboard.urgents} urgent(s)`" />
+=======
+            <h2>Bonjour {{ greetingName }}</h2>
+            <p class="text-muted">Vue d'ensemble de vos classes.</p>
+          </div>
+
+          <div class="stat-grid">
+            <StatCard
+              label="Classes actives"
+              :value="dashboard.stats.classesActives"
+              :caption="dashboard.stats.classesActivesCaption"
+            />
+            <StatCard label="Comprehension moy" :value="dashboard.stats.comprehensionMoyenne" />
+            <StatCard
+              label="Devoirs a corriger"
+              :value="dashboard.stats.devoirsACorriger"
+              :caption="dashboard.stats.devoirsACorrigerCaption"
+            />
+            <StatCard
+              label="Tickets en attente"
+              :value="dashboard.stats.ticketsEnAttente"
+              :caption="dashboard.stats.ticketsEnAttenteCaption"
+            />
+>>>>>>> Stashed changes
           </div>
 
           <div class="panel-grid">
             <section class="panel">
+<<<<<<< Updated upstream
               <h3 class="panel__title">
                 Alertes de compréhension
                 <RouterLink class="panel__link" to="/professeur/comprehension">Voir tout</RouterLink>
@@ -35,11 +64,25 @@
                     <p class="alert-row__description">{{ alerte.libelle }}</p>
                   </div>
                   <BaseBadge :label="alerte.badge.label" :variant="alerte.badge.variant" />
+=======
+              <div class="panel-header-row">
+                <h3 class="panel__title">Alertes de compréhension</h3>
+                <router-link to="/professeur/comprehension" class="text-sm">Voir tout</router-link>
+              </div>
+              <div class="alert-list">
+                <div v-for="alerte in dashboard.alertesComprehension" :key="alerte.id" class="alert-row">
+                  <div>
+                    <p class="alert-row__title">{{ alerte.titre }}</p>
+                    <p class="alert-row__description">{{ alerte.description }}</p>
+                  </div>
+                  <BaseBadge :label="alerte.label" :variant="alerte.variant" />
+>>>>>>> Stashed changes
                 </div>
               </div>
             </section>
 
             <section class="panel">
+<<<<<<< Updated upstream
               <h3 class="panel__title">
                 Devoirs à corriger
                 <RouterLink class="panel__link" to="/professeur/devoirs">Voir tout</RouterLink>
@@ -76,6 +119,40 @@
               </div>
             </div>
             <p v-else class="task-table__empty">Aucune classe avec des données de progression pour le moment.</p>
+=======
+              <div class="panel-header-row">
+                <h3 class="panel__title">Devoirs à corriger</h3>
+                <router-link to="/professeur/devoirs" class="text-sm">Voir tout</router-link>
+              </div>
+              <table class="task-table">
+                <thead>
+                  <tr>
+                    <th>Devoir</th>
+                    <th>Classe</th>
+                    <th>Rendus</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="devoir in dashboard.devoirsACorrigerListe" :key="devoir.id">
+                    <td>{{ devoir.devoir }}</td>
+                    <td>{{ devoir.classe }}</td>
+                    <td>{{ devoir.rendus }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </div>
+
+          <section class="panel">
+            <h3 class="panel__title">Mes classes</h3>
+            <div class="classes-grid">
+              <div v-for="classe in dashboard.mesClasses" :key="classe.id">
+                <p class="classes-grid__name">{{ classe.nom }}</p>
+                <p class="classes-grid__count">{{ classe.eleves }} élèves</p>
+                <ProgressBar label="Maîtrise moyenne" :percent="classe.maitrise" :color="classe.color" />
+              </div>
+            </div>
+>>>>>>> Stashed changes
           </section>
         </template>
       </div>
@@ -91,6 +168,7 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 import StatCard from '@/components/dashboard/StatCard.vue'
 import BaseBadge from '@/components/base/BaseBadge.vue'
 import ProgressBar from '@/components/base/ProgressBar.vue'
+<<<<<<< Updated upstream
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
 import { profNavItems } from '@/config/nav/profNavItems'
@@ -136,12 +214,41 @@ async function load() {
 }
 
 onMounted(load)
+=======
+import { getProfDashboard } from '@/services/professeur/profDashboardService'
+import { useSession, clearCurrentUser } from '@/services/auth/session'
+import { logout } from '@/services/auth/authService'
+import { professeurNavItems } from '@/config/nav/professeurNavItems'
+
+const router = useRouter()
+const session = useSession()
+const navItems = professeurNavItems
+const userName = computed(() => session.user?.name || 'Professeur')
+
+/**
+ * "M. Kodjo Aziaka" -> "M. Aziaka" : titre de civilité + nom de famille,
+ * pour matcher le format de salutation court de la maquette.
+ */
+const greetingName = computed(() => {
+  const parts = userName.value.split(' ')
+  return parts.length > 1 ? `${parts[0]} ${parts[parts.length - 1]}` : userName.value
+})
+
+const dashboard = ref(null)
+const isLoading = ref(true)
+
+onMounted(async () => {
+  dashboard.value = await getProfDashboard()
+  isLoading.value = false
+})
+>>>>>>> Stashed changes
 
 async function handleLogout() {
   await logout()
   clearCurrentUser()
   router.push('/connexion')
 }
+<<<<<<< Updated upstream
 </script>
 
 <style scoped>
@@ -174,3 +281,6 @@ async function handleLogout() {
   font-size: var(--font-size-sm);
 }
 </style>
+=======
+</script>
+>>>>>>> Stashed changes

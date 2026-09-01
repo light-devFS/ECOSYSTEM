@@ -26,6 +26,11 @@ Ouvre ensuite l'URL affichée (généralement `http://localhost:5173/connexion`)
 - E-mail : `admin@edusphere.test`
 - Mot de passe : `demo1234`
 
+**Professeur**
+- Identifiant : `professeur.demo`
+- E-mail : `professeur@edusphere.test`
+- Mot de passe : `demo1234`
+
 Chaque compte redirige automatiquement vers le tableau de bord de son espace après connexion.
 
 ## Pages disponibles
@@ -52,6 +57,15 @@ Chaque compte redirige automatiquement vers le tableau de bord de son espace apr
 - `emploi-du-temps` — Emploi du temps
 - `statistiques` — Statistiques
 - `supervision` — Supervision des tickets
+
+**Espace professeur** (`/professeur/...`)
+- `dashboard` — Tableau de bord
+- `comprehension` — Comprehension de la classe
+- `programme` — Programme & Planification
+- `contenus` — Contenus & Validation IA
+- `devoirs` — Devoirs & Evaluations
+- `tickets` — Tickets pédagogiques
+- `programme/:id` — Détail d'un chapitre (exercices IA + séances), accessible via le bouton "Ouvrir" de la page Programme
 
 Cette liste est mise à jour à chaque nouvelle page ajoutée — vérifie-la ici avant de demander "comment j'accède à telle page".
 

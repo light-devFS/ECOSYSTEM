@@ -29,6 +29,13 @@
   border-radius: var(--radius-sm);
   color: var(--color-text-inverse);
   font-size: var(--font-size-base);
+  gap: var(--space-2);
+}
+
+.app-sidebar__link > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-sidebar__link:hover {

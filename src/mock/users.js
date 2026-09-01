@@ -27,4 +27,12 @@ export const mockUsers = [
     name: 'Sarah ADJOWA',
     role: 'admin',
   },
+  {
+    id: 'u4',
+    identifier: 'professeur.demo',
+    email: 'professeur@edusphere.test',
+    password: 'demo1234',
+    name: 'M. Kodjo Aziaka',
+    role: 'professeur',
+  },
 ]

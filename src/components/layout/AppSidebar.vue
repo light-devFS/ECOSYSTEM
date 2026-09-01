@@ -12,6 +12,7 @@
         class="app-sidebar__link"
         :class="{ 'app-sidebar__link--disabled': item.disabled }"
         :aria-disabled="item.disabled"
+        :title="item.label"
         @click="handleLinkClick(item, $event)"
       >
         <span>{{ item.label }}</span>
