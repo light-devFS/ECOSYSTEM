@@ -9,6 +9,7 @@ const tutor = require("./src/tutor");
 const exams = require("./src/exams");
 const admin = require("./src/admin");
 const parent = require("./src/parent");
+const ministere = require("./src/ministere");
 const courses = require("./src/eleve/courses");
 const exercises = require("./src/eleve/exercises");
 const progression = require("./src/eleve/progression");
@@ -36,6 +37,12 @@ exports.createTicketGroupe = admin.createTicketGroupe;
 // ESPACE PARENT
 exports.seedParentData = parent.seedParentData;
 exports.linkChildToParent = parent.linkChildToParent;
+
+// ESPACE MINISTÈRE
+exports.seedMinistryData = ministere.seedMinistryData;
+exports.getNationalStatistics = ministere.getNationalStatistics;
+exports.getNationalCurriculums = ministere.getNationalCurriculums;
+exports.exportNationalReport = ministere.exportNationalReport;
 
 // PARTIE ÉLÈVE
 exports.seedCourses = courses.seedCourses;

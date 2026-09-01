@@ -77,7 +77,7 @@ exports.createUserAccount = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "L'adresse e-mail n'est pas valide.");
   }
 
-  const rolesAutorises = ["eleve", "professeur", "parent", "admin"];
+  const rolesAutorises = ["eleve", "professeur", "parent", "admin", "ministere"];
   if (!rolesAutorises.includes(role)) {
     throw new HttpsError(
       "invalid-argument",
