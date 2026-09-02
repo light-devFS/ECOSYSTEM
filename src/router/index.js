@@ -65,42 +65,6 @@ const routes = [
     component: () => import('@/views/eleve/ExamBankView.vue'),
   },
   {
-    path: '/professeur/dashboard',
-    name: 'prof-dashboard',
-    meta: { role: 'professeur' },
-    component: () => import('@/views/professeur/ProfDashboardView.vue'),
-  },
-  {
-    path: '/professeur/tickets',
-    name: 'prof-tickets',
-    meta: { role: 'professeur' },
-    component: () => import('@/views/professeur/ProfTicketsView.vue'),
-  },
-  {
-    path: '/professeur/comprehension',
-    name: 'prof-comprehension',
-    meta: { role: 'professeur' },
-    component: () => import('@/views/professeur/ProfComprehensionView.vue'),
-  },
-  {
-    path: '/professeur/devoirs',
-    name: 'prof-devoirs',
-    meta: { role: 'professeur' },
-    component: () => import('@/views/professeur/ProfAssignmentsView.vue'),
-  },
-  {
-    path: '/professeur/programme',
-    name: 'prof-programme',
-    meta: { role: 'professeur' },
-    component: () => import('@/views/professeur/ProfProgramView.vue'),
-  },
-  {
-    path: '/professeur/contenus',
-    name: 'prof-contenus',
-    meta: { role: 'professeur' },
-    component: () => import('@/views/professeur/ProfContentsView.vue'),
-  },
-  {
     path: '/parent/dashboard',
     name: 'parent-dashboard',
     meta: { role: 'parent' },
@@ -185,6 +149,12 @@ const routes = [
     component: () => import('@/views/professeur/ContenusIAView.vue'),
   },
   {
+    path: '/professeur/contenus/:id',
+    name: 'professeur-contenu-editeur',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ContentEditorView.vue'),
+  },
+  {
     path: '/professeur/devoirs',
     name: 'professeur-devoirs',
     meta: { role: 'professeur' },
@@ -195,6 +165,30 @@ const routes = [
     name: 'professeur-tickets',
     meta: { role: 'professeur' },
     component: () => import('@/views/professeur/ProfTicketsView.vue'),
+  },
+  {
+    path: '/ministere/dashboard',
+    name: 'ministere-dashboard',
+    meta: { role: 'ministere' },
+    component: () => import('@/views/ministere/NationalDashboardView.vue'),
+  },
+  {
+    path: '/ministere/indicateurs',
+    name: 'ministere-indicateurs',
+    meta: { role: 'ministere' },
+    component: () => import('@/views/ministere/IndicatorsView.vue'),
+  },
+  {
+    path: '/ministere/programmes',
+    name: 'ministere-programmes',
+    meta: { role: 'ministere' },
+    component: () => import('@/views/ministere/OfficialProgramsView.vue'),
+  },
+  {
+    path: '/ministere/notions-difficiles',
+    name: 'ministere-notions-difficiles',
+    meta: { role: 'ministere' },
+    component: () => import('@/views/ministere/NotionsDifficilesView.vue'),
   },
 ]
 

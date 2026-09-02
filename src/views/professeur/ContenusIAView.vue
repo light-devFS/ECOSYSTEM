@@ -120,7 +120,7 @@ function handleValider(contenu) {
 }
 
 function handleModifier(contenu) {
-  // L'éditeur du contenu généré (contenu.id) sera construit à la prochaine maquette.
+  router.push(`/professeur/contenus/${contenu.id}`)
 }
 
 async function handleLogout() {
