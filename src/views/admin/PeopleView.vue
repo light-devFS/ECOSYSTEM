@@ -112,8 +112,7 @@ import BaseBadge from '@/components/base/BaseBadge.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 import BaseSelect from '@/components/base/BaseSelect.vue'
-import { getEleves, getEnseignants } from '@/services/admin/adminPeopleService'
-import { mockClasses } from '@/mock/adminPeople'
+import { getEleves, getEnseignants, getClasses, createEleve, updateEleve } from '@/services/admin/adminPeopleService'
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
 import { adminNavItems } from '@/config/nav/adminNavItems'
@@ -129,7 +128,7 @@ const statutOptions = [
   { value: 'actif', label: 'Actif' },
   { value: 'inactif', label: 'Inactif' },
 ]
-const classeOptions = mockClasses.map((classe) => ({ value: classe, label: classe }))
+const classeOptions = ref([])
 
 const tabs = [
   { id: 'eleves', label: 'Eleves' },
@@ -142,12 +141,20 @@ const eleves = ref([])
 const enseignants = ref([])
 const isLoading = ref(true)
 
-onMounted(async () => {
-  const [elevesResult, enseignantsResult] = await Promise.all([getEleves(), getEnseignants()])
+async function loadPeople() {
+  isLoading.value = true
+  const [elevesResult, enseignantsResult, classesResult] = await Promise.all([
+    getEleves(),
+    getEnseignants(),
+    getClasses(),
+  ])
   eleves.value = elevesResult
   enseignants.value = enseignantsResult
+  classeOptions.value = classesResult.map((classe) => ({ value: classe, label: classe }))
   isLoading.value = false
-})
+}
+
+onMounted(loadPeople)
 
 const filteredEleves = computed(() =>
   eleves.value.filter((eleve) => eleve.nom.toLowerCase().includes(searchTerm.value.toLowerCase()))
@@ -172,17 +179,19 @@ function handleAdd() {
   // L'ajout d'un enseignant sera construit à la prochaine maquette.
 }
 
-function handleSubmitCreate() {
+async function handleSubmitCreate() {
   if (!createForm.nom.trim()) return
 
-  eleves.value.unshift({
-    id: `el-${Date.now()}`,
-    nom: createForm.nom.trim(),
-    email: createForm.email.trim(),
-    classe: createForm.classe,
-    moyenne: '— / 20',
-    statut: 'actif',
-  })
+  try {
+    await createEleve({
+      nom: createForm.nom.trim(),
+      email: createForm.email.trim(),
+      classe: createForm.classe,
+    })
+    await loadPeople()
+  } catch (error) {
+    alert(error.message || 'Impossible de créer cet élève.')
+  }
 
   isCreateModalOpen.value = false
 }
@@ -199,14 +208,24 @@ function openEditEleve(eleve) {
   isEditModalOpen.value = true
 }
 
-function handleSubmitEdit() {
+async function handleSubmitEdit() {
   const eleve = eleves.value.find((candidate) => candidate.id === editForm.id)
   if (!eleve) return
 
-  eleve.nom = editForm.nom.trim()
-  eleve.email = editForm.email.trim()
-  eleve.classe = editForm.classe
-  eleve.statut = editForm.statut
+  try {
+    await updateEleve(eleve.id, {
+      nom: editForm.nom.trim(),
+      email: editForm.email.trim(),
+      classe: editForm.classe,
+      statut: editForm.statut,
+    })
+    eleve.nom = editForm.nom.trim()
+    eleve.email = editForm.email.trim()
+    eleve.classe = editForm.classe
+    eleve.statut = editForm.statut
+  } catch (error) {
+    alert(error.message || 'Impossible de modifier cet élève.')
+  }
 
   isEditModalOpen.value = false
 }

@@ -118,6 +118,78 @@ const routes = [
     meta: { role: 'admin' },
     component: () => import('@/views/admin/SupervisionView.vue'),
   },
+  {
+    path: '/professeur/dashboard',
+    name: 'professeur-dashboard',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfDashboardView.vue'),
+  },
+  {
+    path: '/professeur/comprehension',
+    name: 'professeur-comprehension',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ComprehensionView.vue'),
+  },
+  {
+    path: '/professeur/programme',
+    name: 'professeur-programme',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProgrammeView.vue'),
+  },
+  {
+    path: '/professeur/programme/:id',
+    name: 'professeur-chapitre-detail',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ChapterDetailView.vue'),
+  },
+  {
+    path: '/professeur/contenus',
+    name: 'professeur-contenus',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ContenusIAView.vue'),
+  },
+  {
+    path: '/professeur/contenus/:id',
+    name: 'professeur-contenu-editeur',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ContentEditorView.vue'),
+  },
+  {
+    path: '/professeur/devoirs',
+    name: 'professeur-devoirs',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/DevoirsView.vue'),
+  },
+  {
+    path: '/professeur/tickets',
+    name: 'professeur-tickets',
+    meta: { role: 'professeur' },
+    component: () => import('@/views/professeur/ProfTicketsView.vue'),
+  },
+  {
+    path: '/ministere/dashboard',
+    name: 'ministere-dashboard',
+    meta: { role: 'ministere' },
+    component: () => import('@/views/ministere/NationalDashboardView.vue'),
+  },
+  {
+    path: '/ministere/indicateurs',
+    name: 'ministere-indicateurs',
+    meta: { role: 'ministere' },
+    component: () => import('@/views/ministere/IndicatorsView.vue'),
+  },
+  {
+    path: '/ministere/programmes',
+    name: 'ministere-programmes',
+    meta: { role: 'ministere' },
+    component: () => import('@/views/ministere/OfficialProgramsView.vue'),
+  },
+  {
+    path: '/ministere/notions-difficiles',
+    name: 'ministere-notions-difficiles',
+    meta: { role: 'ministere' },
+    component: () => import('@/views/ministere/NotionsDifficilesView.vue'),
+  },
 ]
 
 const router = createRouter({

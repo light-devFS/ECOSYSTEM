@@ -31,3 +31,8 @@
   background-color: var(--color-primary);
   color: var(--color-text-inverse);
 }
+
+.badge--teal {
+  background-color: rgba(23, 162, 160, 0.15);
+  color: var(--color-teal);
+}

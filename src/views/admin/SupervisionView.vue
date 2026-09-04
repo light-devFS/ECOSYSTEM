@@ -49,10 +49,21 @@
         </section>
 
         <div class="actions-end">
-          <BaseButton @click="handleOpenMessaging">Messagerie</BaseButton>
+          <BaseButton @click="isMessagingModalOpen = true">Messagerie</BaseButton>
         </div>
       </div>
     </div>
+
+    <BaseModal v-model="isMessagingModalOpen" title="Messagerie">
+      <form @submit.prevent="handleSubmitMessage">
+        <BaseInput v-model="messageForm.destinataire" label="Destinataire" />
+        <BaseInput v-model="messageForm.email" type="email" label="E-mail" />
+        <BaseTextarea v-model="messageForm.message" label="Message" :rows="6" />
+        <BaseButton type="submit" :loading="isSendingMessage">
+          {{ isSendingMessage ? 'Envoi en cours…' : 'Envoyer' }}
+        </BaseButton>
+      </form>
+    </BaseModal>
   </div>
 </template>
 
@@ -64,7 +75,12 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 import BaseSelect from '@/components/base/BaseSelect.vue'
 import BaseBadge from '@/components/base/BaseBadge.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
+import BaseModal from '@/components/base/BaseModal.vue'
+import BaseInput from '@/components/base/BaseInput.vue'
+import BaseTextarea from '@/components/base/BaseTextarea.vue'
 import { getTicketsSupervision } from '@/services/admin/adminTicketsSupervisionService'
+import { sendMessage } from '@/services/admin/adminMessagingService'
+import { getClasses } from '@/services/admin/adminPeopleService'
 import { useSession, clearCurrentUser } from '@/services/auth/session'
 import { logout } from '@/services/auth/authService'
 import { adminNavItems } from '@/config/nav/adminNavItems'
@@ -85,11 +101,7 @@ const statutOptions = [
   { value: 'sans-reponse', label: 'Sans reponse(5j)' },
   { value: 'nouveau', label: 'Nouveau' },
 ]
-const classeOptions = [
-  { value: 'toutes', label: 'Toutes' },
-  { value: 'Terminale D', label: 'Terminale D' },
-  { value: 'Première S', label: 'Première S' },
-]
+const classeOptions = ref([{ value: 'toutes', label: 'Toutes' }])
 const prioriteOptions = [
   { value: 'toutes', label: 'Toutes' },
   { value: 'normale', label: 'Normale' },
@@ -106,11 +118,34 @@ async function loadTickets() {
   isLoading.value = false
 }
 
-onMounted(loadTickets)
+async function loadClasses() {
+  const classes = await getClasses()
+  classeOptions.value = [{ value: 'toutes', label: 'Toutes' }, ...classes.map((c) => ({ value: c, label: c }))]
+}
+
+onMounted(() => {
+  loadClasses()
+  loadTickets()
+})
 watch(filters, loadTickets)
 
-function handleOpenMessaging() {
-  // La messagerie administration (contenu de la page) sera construite à la prochaine maquette.
+const isMessagingModalOpen = ref(false)
+const isSendingMessage = ref(false)
+const messageForm = reactive({ destinataire: '', email: '', message: '' })
+
+async function handleSubmitMessage() {
+  if (!messageForm.destinataire.trim() || !messageForm.message.trim()) return
+
+  isSendingMessage.value = true
+  try {
+    await sendMessage({ ...messageForm })
+    messageForm.destinataire = ''
+    messageForm.email = ''
+    messageForm.message = ''
+    isMessagingModalOpen.value = false
+  } finally {
+    isSendingMessage.value = false
+  }
 }
 
 async function handleLogout() {

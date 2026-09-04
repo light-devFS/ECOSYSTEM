@@ -26,7 +26,7 @@
                 <td>{{ devoir.matiere }}</td>
                 <td>{{ devoir.titre }}</td>
                 <td>{{ devoir.echeance }}</td>
-                <td><BaseBadge :label="statutLabel[devoir.statut]" variant="neutral" /></td>
+                <td><BaseBadge :label="statutLabel[devoir.statut]" :variant="statutVariant[devoir.statut]" /></td>
               </tr>
             </tbody>
           </table>
@@ -53,7 +53,8 @@ const session = useSession()
 const navItems = parentNavItems
 const userName = computed(() => session.user?.name || 'Parent')
 
-const statutLabel = { 'a-faire': 'À faire', 'en-cours': 'En cours' }
+const statutLabel = { 'a-faire': 'À faire', 'en-cours': 'En cours', 'en-retard': 'En retard', rendu: 'Rendu' }
+const statutVariant = { 'a-faire': 'warning', 'en-cours': 'info', 'en-retard': 'danger', rendu: 'success' }
 
 const assignments = ref([])
 const isLoading = ref(true)
